@@ -17,20 +17,39 @@ body {
     overflow: hidden;
 }
 
-/* Terminal box */
+/* Matrix canvas */
+#matrix {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+}
+
+/* Terminal */
 .terminal {
+    position: relative;
+    z-index: 1;
     width: 90%;
     max-width: 600px;
-    background: #111;
+    background: rgba(17,17,17,0.9);
     padding: 30px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0,255,200,0.2);
 }
 
-/* Title */
+/* Title glitch */
 h1 {
+    position: relative;
     color: #00ffcc;
-    margin-bottom: 10px;
+}
+
+h1::after {
+    content: attr(data-text);
+    position: absolute;
+    left: 2px;
+    top: 0;
+    color: red;
+    opacity: 0.3;
 }
 
 /* Button */
@@ -43,7 +62,7 @@ button {
     margin-top: 20px;
 }
 
-/* Hidden sections */
+/* Hidden */
 #countdown, #content {
     display: none;
 }
@@ -57,7 +76,6 @@ button {
     animation: blink 1s infinite;
 }
 
-/* Cursor blink */
 @keyframes blink {
     50% { border-color: transparent; }
 }
@@ -69,11 +87,14 @@ button {
     right: 20px;
     color: #00ffcc;
     cursor: pointer;
+    z-index: 2;
 }
 </style>
 </head>
 
 <body>
+
+<canvas id="matrix"></canvas>
 
 <div class="music" onclick="toggleMusic()">[ music ]</div>
 
@@ -82,8 +103,7 @@ button {
 </audio>
 
 <div class="terminal" id="start">
-    <p>> initializing birthday protocol...</p>
-    <p>> target: Susanna</p>
+    <p id="boot"></p>
     <button onclick="startCountdown()">[ EXECUTE ]</button>
 </div>
 
@@ -92,12 +112,66 @@ button {
 </div>
 
 <div class="terminal" id="content">
-    <h1>> Happy Birthday Susanna 🎂</h1>
+    <h1 data-text="> Happy Birthday Susanna 🎂">
+        > Happy Birthday Susanna 🎂
+    </h1>
     <p id="typing"></p>
     <p style="opacity:0.6; margin-top:20px;">> from praveen</p>
 </div>
 
 <script>
+// Matrix effect
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+
+let letters = "01".split("");
+let fontSize = 14;
+let columns = canvas.width / fontSize;
+let drops = [];
+
+for (let i = 0; i < columns; i++) drops[i] = 1;
+
+function drawMatrix() {
+    ctx.fillStyle = "rgba(0,0,0,0.05)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "#00ffcc";
+    ctx.font = fontSize + "px monospace";
+
+    for (let i = 0; i < drops.length; i++) {
+        let text = letters[Math.floor(Math.random() * letters.length)];
+        ctx.fillText(text, i * fontSize, drops[i] * fontSize);
+
+        if (drops[i] * fontSize > canvas.height && Math.random() > 0.975)
+            drops[i] = 0;
+
+        drops[i]++;
+    }
+}
+setInterval(drawMatrix, 35);
+
+// Boot text
+const bootText = [
+"> booting system...",
+"> connecting to server...",
+"> locating Susanna...",
+"> access granted ✅"
+];
+
+let line = 0;
+
+function typeBoot() {
+    if (line < bootText.length) {
+        document.getElementById("boot").innerHTML += bootText[line] + "<br>";
+        line++;
+        setTimeout(typeBoot, 500);
+    }
+}
+typeBoot();
+
 // Countdown
 function startCountdown() {
     document.getElementById("start").style.display = "none";
@@ -117,7 +191,7 @@ function startCountdown() {
     }, 1000);
 }
 
-// Typing effect
+// Typing message
 const message = "> Not just another year...\n> but another chapter of your story.\n> stay rare. stay real. stay you. ❤️";
 let i = 0;
 
@@ -130,7 +204,7 @@ function startTyping() {
     }, 40);
 }
 
-// Music toggle
+// Music
 function toggleMusic() {
     let music = document.getElementById("bgMusic");
     if (music.paused) music.play();
