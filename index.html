@@ -7,51 +7,158 @@
 <style>
 body {
     margin: 0;
-    background: black;
-    color: white;
-    font-family: Arial;
+    height: 100vh;
+    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    overflow: hidden;
 }
 
-#content {
+/* Glass card */
+.card {
+    backdrop-filter: blur(15px);
+    background: rgba(255,255,255,0.1);
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    box-shadow: 0 0 30px rgba(0,0,0,0.3);
+    width: 90%;
+    max-width: 400px;
+}
+
+/* Button */
+button {
+    padding: 12px 25px;
+    margin-top: 20px;
+    border: none;
+    border-radius: 10px;
+    background: gold;
+    color: black;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+/* Hidden sections */
+#content, #countdown {
     display: none;
 }
 
-button {
-    padding: 15px 30px;
-    font-size: 18px;
-    background: gold;
-    border: none;
-    border-radius: 10px;
+/* Typing text */
+#typing {
+    font-size: 20px;
+    border-right: 2px solid white;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Music button */
+.music {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: white;
+    color: black;
+    padding: 8px 12px;
+    border-radius: 8px;
     cursor: pointer;
 }
 
-h1 {
-    font-size: 40px;
+/* Fireworks canvas */
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
 }
 </style>
 </head>
 
 <body>
 
-<div id="start">
-    <button onclick="showWish()">Tap to see your surprise 🎁</button>
+<div class="music" onclick="toggleMusic()">🎵 Music</div>
+
+<audio id="bgMusic" loop>
+  <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
+</audio>
+
+<canvas id="fireworks"></canvas>
+
+<div class="card" id="start">
+    <h2>Something special is waiting… 🎁</h2>
+    <button onclick="startCountdown()">Reveal Wish</button>
 </div>
 
-<div id="content">
+<div class="card" id="countdown">
+    <h1 id="count">3</h1>
+</div>
+
+<div class="card" id="content">
     <h1>🎉 Happy Birthday 🎂</h1>
-    <p>This is your special day ✨</p>
-    <p>Keep shining and smiling always ❤️</p>
+    <p id="typing"></p>
+    <p style="margin-top:20px; opacity:0.7;">— From Praveen</p>
 </div>
 
 <script>
-function showWish() {
+// Countdown
+function startCountdown() {
     document.getElementById("start").style.display = "none";
-    document.getElementById("content").style.display = "block";
+    document.getElementById("countdown").style.display = "block";
+
+    let count = 3;
+    let interval = setInterval(() => {
+        count--;
+        document.getElementById("count").innerText = count;
+
+        if (count === 0) {
+            clearInterval(interval);
+            document.getElementById("countdown").style.display = "none";
+            document.getElementById("content").style.display = "block";
+            startTyping();
+            launchFireworks();
+        }
+    }, 1000);
+}
+
+// Typing effect
+const message = "Not just another year… but another chapter of your story ✨ Stay amazing always ❤️";
+let i = 0;
+
+function startTyping() {
+    let typing = document.getElementById("typing");
+    let interval = setInterval(() => {
+        typing.innerHTML += message.charAt(i);
+        i++;
+        if (i >= message.length) clearInterval(interval);
+    }, 50);
+}
+
+// Music toggle
+function toggleMusic() {
+    let music = document.getElementById("bgMusic");
+    if (music.paused) music.play();
+    else music.pause();
+}
+
+// Simple fireworks
+const canvas = document.getElementById("fireworks");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+function launchFireworks() {
+    setInterval(() => {
+        let x = Math.random() * canvas.width;
+        let y = Math.random() * canvas.height / 2;
+
+        for (let i = 0; i < 20; i++) {
+            ctx.beginPath();
+            ctx.arc(x, y, Math.random() * 3, 0, Math.PI * 2);
+            ctx.fillStyle = "hsl(" + Math.random()*360 + ",100%,50%)";
+            ctx.fill();
+        }
+    }, 500);
 }
 </script>
 
