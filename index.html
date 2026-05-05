@@ -2,119 +2,99 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Birthday Surprise 🎉</title>
+<title>Birthday Terminal 🎉</title>
 
 <style>
 body {
     margin: 0;
-    height: 100vh;
-    background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+    background: #0a0a0a;
+    color: #00ffcc;
+    font-family: "Courier New", monospace;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-family: 'Poppins', sans-serif;
-    color: white;
+    height: 100vh;
     overflow: hidden;
 }
 
-/* Glass card */
-.card {
-    backdrop-filter: blur(15px);
-    background: rgba(255,255,255,0.1);
-    border-radius: 20px;
-    padding: 40px;
-    text-align: center;
-    box-shadow: 0 0 30px rgba(0,0,0,0.3);
+/* Terminal box */
+.terminal {
     width: 90%;
-    max-width: 400px;
-    animation: fadeIn 1.5s ease;
+    max-width: 600px;
+    background: #111;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(0,255,200,0.2);
+}
+
+/* Title */
+h1 {
+    color: #00ffcc;
+    margin-bottom: 10px;
 }
 
 /* Button */
 button {
-    padding: 12px 25px;
-    margin-top: 20px;
-    border: none;
-    border-radius: 10px;
-    background: gold;
-    color: black;
+    background: transparent;
+    border: 1px solid #00ffcc;
+    color: #00ffcc;
+    padding: 10px 20px;
     cursor: pointer;
-    font-size: 16px;
+    margin-top: 20px;
 }
 
-/* Sections */
-#content, #countdown {
+/* Hidden sections */
+#countdown, #content {
     display: none;
 }
 
-/* Typing text (FIXED) */
+/* Typing */
 #typing {
-    font-size: 20px;
-    line-height: 1.6;
-    max-width: 320px;
-    margin: auto;
-    border-right: 2px solid white;
+    margin-top: 20px;
+    line-height: 1.5;
+    border-right: 2px solid #00ffcc;
     padding-right: 5px;
-}
-
-/* Blinking cursor */
-@keyframes blink {
-    50% { border-color: transparent; }
-}
-#typing {
     animation: blink 1s infinite;
 }
 
-/* Music button */
+/* Cursor blink */
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+
+/* Music */
 .music {
     position: absolute;
     top: 20px;
     right: 20px;
-    background: white;
-    color: black;
-    padding: 8px 12px;
-    border-radius: 8px;
+    color: #00ffcc;
     cursor: pointer;
-}
-
-/* Fireworks canvas */
-canvas {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-/* Fade animation */
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
 }
 </style>
 </head>
 
 <body>
 
-<div class="music" onclick="toggleMusic()">🎵 Music</div>
+<div class="music" onclick="toggleMusic()">[ music ]</div>
 
 <audio id="bgMusic" loop>
-  <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
+  <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3">
 </audio>
 
-<canvas id="fireworks"></canvas>
-
-<div class="card" id="start">
-    <h2>Something special is waiting… 🎁</h2>
-    <button onclick="startCountdown()">Reveal Wish</button>
+<div class="terminal" id="start">
+    <p>> initializing birthday protocol...</p>
+    <p>> target: Susanna</p>
+    <button onclick="startCountdown()">[ EXECUTE ]</button>
 </div>
 
-<div class="card" id="countdown">
+<div class="terminal" id="countdown">
     <h1 id="count">3</h1>
 </div>
 
-<div class="card" id="content">
-    <h1>🎉 Happy Birthday <span style="color: gold;">Susanna</span> 🎂</h1>
+<div class="terminal" id="content">
+    <h1>> Happy Birthday Susanna 🎂</h1>
     <p id="typing"></p>
-    <p style="margin-top:20px; opacity:0.7;">— From Praveen</p>
+    <p style="opacity:0.6; margin-top:20px;">> from praveen</p>
 </div>
 
 <script>
@@ -133,13 +113,12 @@ function startCountdown() {
             document.getElementById("countdown").style.display = "none";
             document.getElementById("content").style.display = "block";
             startTyping();
-            launchFireworks();
         }
     }, 1000);
 }
 
 // Typing effect
-const message = "Not just another year… but another chapter of your story ✨ Stay amazing always ❤️";
+const message = "> Not just another year...\n> but another chapter of your story.\n> stay rare. stay real. stay you. ❤️";
 let i = 0;
 
 function startTyping() {
@@ -156,26 +135,6 @@ function toggleMusic() {
     let music = document.getElementById("bgMusic");
     if (music.paused) music.play();
     else music.pause();
-}
-
-// Fireworks
-const canvas = document.getElementById("fireworks");
-const ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-
-function launchFireworks() {
-    setInterval(() => {
-        let x = Math.random() * canvas.width;
-        let y = Math.random() * canvas.height / 2;
-
-        for (let i = 0; i < 30; i++) {
-            ctx.beginPath();
-            ctx.arc(x, y, Math.random() * 3, 0, Math.PI * 2);
-            ctx.fillStyle = "hsl(" + Math.random()*360 + ",100%,50%)";
-            ctx.fill();
-        }
-    }, 400);
 }
 </script>
 
