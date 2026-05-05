@@ -27,6 +27,7 @@ body {
     box-shadow: 0 0 30px rgba(0,0,0,0.3);
     width: 90%;
     max-width: 400px;
+    animation: fadeIn 1.5s ease;
 }
 
 /* Button */
@@ -41,17 +42,27 @@ button {
     font-size: 16px;
 }
 
-/* Hidden sections */
+/* Sections */
 #content, #countdown {
     display: none;
 }
 
-/* Typing text */
+/* FIXED typing text */
 #typing {
     font-size: 20px;
+    line-height: 1.6;
+    max-width: 320px;
+    margin: auto;
     border-right: 2px solid white;
-    white-space: nowrap;
-    overflow: hidden;
+    padding-right: 5px;
+}
+
+/* blinking cursor */
+@keyframes blink {
+    50% { border-color: transparent; }
+}
+#typing {
+    animation: blink 1s infinite;
 }
 
 /* Music button */
@@ -71,6 +82,12 @@ canvas {
     position: absolute;
     top: 0;
     left: 0;
+}
+
+/* Fade animation */
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
 }
 </style>
 </head>
@@ -131,7 +148,7 @@ function startTyping() {
         typing.innerHTML += message.charAt(i);
         i++;
         if (i >= message.length) clearInterval(interval);
-    }, 50);
+    }, 40);
 }
 
 // Music toggle
@@ -141,7 +158,7 @@ function toggleMusic() {
     else music.pause();
 }
 
-// Simple fireworks
+// Fireworks (improved)
 const canvas = document.getElementById("fireworks");
 const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
@@ -152,13 +169,13 @@ function launchFireworks() {
         let x = Math.random() * canvas.width;
         let y = Math.random() * canvas.height / 2;
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 30; i++) {
             ctx.beginPath();
             ctx.arc(x, y, Math.random() * 3, 0, Math.PI * 2);
             ctx.fillStyle = "hsl(" + Math.random()*360 + ",100%,50%)";
             ctx.fill();
         }
-    }, 500);
+    }, 400);
 }
 </script>
 
