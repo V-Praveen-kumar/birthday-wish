@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Birthday Terminal 🎉</title>
 
 <style>
@@ -10,31 +11,42 @@ body {
     background: #0a0a0a;
     color: #00ffcc;
     font-family: "Courier New", monospace;
+
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+
+    min-height: 100vh;
+    width: 100%;
     overflow: hidden;
+    position: relative;
 }
 
-/* Matrix canvas */
+/* Matrix background */
 #matrix {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
     z-index: 0;
 }
 
-/* Terminal */
+/* Terminal box */
 .terminal {
     position: relative;
     z-index: 1;
+
     width: 90%;
     max-width: 600px;
+
     background: rgba(17,17,17,0.9);
-    padding: 30px;
+    padding: 25px;
     border-radius: 10px;
+
     box-shadow: 0 0 20px rgba(0,255,200,0.2);
+
+    margin: auto;
 }
 
 /* Title glitch */
@@ -62,7 +74,7 @@ button {
     margin-top: 20px;
 }
 
-/* Hidden */
+/* Sections */
 #countdown, #content {
     display: none;
 }
@@ -74,13 +86,14 @@ button {
     border-right: 2px solid #00ffcc;
     padding-right: 5px;
     animation: blink 1s infinite;
+    white-space: pre-line;
 }
 
 @keyframes blink {
     50% { border-color: transparent; }
 }
 
-/* Music */
+/* Music button */
 .music {
     position: absolute;
     top: 20px;
@@ -88,6 +101,18 @@ button {
     color: #00ffcc;
     cursor: pointer;
     z-index: 2;
+}
+
+/* Mobile fix */
+@media (max-width: 480px) {
+    .terminal {
+        padding: 20px;
+        font-size: 14px;
+    }
+
+    h1 {
+        font-size: 18px;
+    }
 }
 </style>
 </head>
@@ -120,16 +145,20 @@ button {
 </div>
 
 <script>
-// Matrix effect
+// MATRIX EFFECT
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
 
-canvas.height = window.innerHeight;
-canvas.width = window.innerWidth;
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+}
+resizeCanvas();
+window.addEventListener("resize", resizeCanvas);
 
 let letters = "01".split("");
 let fontSize = 14;
-let columns = canvas.width / fontSize;
+let columns = Math.floor(canvas.width / fontSize);
 let drops = [];
 
 for (let i = 0; i < columns; i++) drops[i] = 1;
@@ -153,7 +182,7 @@ function drawMatrix() {
 }
 setInterval(drawMatrix, 35);
 
-// Boot text
+// BOOT TEXT
 const bootText = [
 "> booting system...",
 "> connecting to server...",
@@ -172,7 +201,7 @@ function typeBoot() {
 }
 typeBoot();
 
-// Countdown
+// COUNTDOWN
 function startCountdown() {
     document.getElementById("start").style.display = "none";
     document.getElementById("countdown").style.display = "block";
@@ -191,8 +220,11 @@ function startCountdown() {
     }, 1000);
 }
 
-// Typing message
-const message = "> Not just another year...\n> but another chapter of your story.\n> stay rare. stay real. stay you. ❤️";
+// TYPING EFFECT
+const message = `> Not just another year...
+> but another chapter of your story.
+> stay rare. stay real. stay you. ❤️`;
+
 let i = 0;
 
 function startTyping() {
@@ -204,7 +236,7 @@ function startTyping() {
     }, 40);
 }
 
-// Music
+// MUSIC
 function toggleMusic() {
     let music = document.getElementById("bgMusic");
     if (music.paused) music.play();
