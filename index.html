@@ -316,8 +316,7 @@ let drops = Array.from(
 
 function drawMatrix(){
 
-ctx.fillStyle = "rgba(0,0,0,0.04)";
-ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
 ctx.font = fontSize + "px monospace";
 
@@ -473,6 +472,7 @@ but another chapter of your story.
 
 > May time be gentle with your beautiful heart,
 > and may I always find reasons to make you smile.
+
 > If somehow I become the reason to gash your heart,
 > may that be my last moment beside you.
 
