@@ -7,65 +7,58 @@
 
 <style>
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
-
 body{
+margin:0;
 background:#000;
+color:#00ffcc;
+font-family:Courier New, monospace;
 overflow:hidden;
-font-family:"Courier New",monospace;
-height:100vh;
-width:100vw;
 display:flex;
 justify-content:center;
 align-items:center;
+height:100vh;
 position:relative;
-color:#00ffcc;
 }
 
-/* ───────── COLLAGE ───────── */
+/* COLLAGE */
 
 .collage{
 position:fixed;
-inset:0;
+top:0;
+left:0;
+width:100%;
+height:100%;
 
 display:grid;
 grid-template-columns:repeat(4,1fr);
 
-gap:4px;
-padding:4px;
+gap:8px;
+padding:8px;
 
+opacity:0.45;
 z-index:0;
 }
 
 .collage img{
 width:100%;
 height:100%;
-aspect-ratio:1/1;
-
 object-fit:cover;
 
-filter:
-brightness(0.6)
-contrast(1.05)
-grayscale(10%);
+border-radius:8px;
 
-border-radius:6px;
+filter:grayscale(20%) brightness(0.55);
 }
 
-/* ───────── DARK OVERLAY ───────── */
+/* OVERLAY */
 
 .overlay{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,0.18);
+background:rgba(0,0,0,0.35);
 z-index:1;
 }
 
-/* ───────── MATRIX ───────── */
+/* MATRIX */
 
 canvas{
 position:fixed;
@@ -77,129 +70,101 @@ z-index:2;
 pointer-events:none;
 }
 
-/* ───────── TERMINAL ───────── */
+/* TERMINAL */
 
 .terminal{
 position:relative;
 z-index:3;
 
 width:90%;
-max-width:700px;
+max-width:650px;
 
-background:rgba(0,0,0,0.72);
+background:rgba(0,0,0,0.78);
 
-border:1px solid rgba(0,255,204,0.25);
+padding:25px;
+border-radius:10px;
 
-backdrop-filter:blur(8px);
+box-shadow:0 0 20px rgba(0,255,200,0.2);
 
-padding:30px;
-border-radius:12px;
-
-box-shadow:
-0 0 20px rgba(0,255,204,0.18),
-0 0 60px rgba(0,0,0,0.5);
+backdrop-filter:blur(5px);
 }
+
+/* TITLE */
 
 h1{
-font-size:52px;
+color:#00ffcc;
+font-size:42px;
 margin-bottom:20px;
-text-shadow:0 0 10px rgba(0,255,204,0.4);
 }
 
-#typing{
-font-size:20px;
-line-height:2;
-white-space:pre-line;
-min-height:220px;
-}
-
-.cursor{
-display:inline-block;
-width:10px;
-height:1.2em;
-background:#00ffcc;
-
-animation:blink 1s infinite;
-vertical-align:bottom;
-}
-
-@keyframes blink{
-50%{
-opacity:0;
-}
-}
-
-.from{
-margin-top:20px;
-opacity:0.6;
-font-size:15px;
-}
-
-/* ───────── BUTTON ───────── */
+/* BUTTON */
 
 button{
-margin-top:20px;
-
-padding:12px 24px;
-
 background:transparent;
 border:1px solid #00ffcc;
-
 color:#00ffcc;
 
-font-family:"Courier New",monospace;
+padding:10px 20px;
+
 cursor:pointer;
 
-transition:0.25s;
+margin-top:20px;
+
+font-family:Courier New, monospace;
 }
 
 button:hover{
 background:#00ffcc;
-color:#000;
+color:black;
 }
 
-/* ───────── SCREENS ───────── */
+/* HIDDEN */
 
 #countdown,
 #content{
 display:none;
 }
 
-#count{
-font-size:100px;
-text-align:center;
+/* TYPING */
+
+#typing{
+margin-top:20px;
+line-height:1.8;
+white-space:pre-line;
+
+border-right:2px solid #00ffcc;
+
+animation:blink 1s infinite;
+
+font-size:18px;
 }
 
-/* ───────── MOBILE FIX ───────── */
+@keyframes blink{
+50%{
+border-color:transparent;
+}
+}
 
-@media(max-width:768px){
+/* MOBILE */
+
+@media(max-width:480px){
 
 .collage{
 grid-template-columns:repeat(3,1fr);
 }
 
-.collage img{
-aspect-ratio:1/1;
-object-fit:cover;
+h1{
+font-size:24px;
 }
 
-h1{
-font-size:28px;
+.terminal{
+font-size:14px;
+padding:20px;
+width:92%;
 }
 
 #typing{
 font-size:15px;
-line-height:1.8;
-min-height:260px;
-}
-
-.terminal{
-padding:20px;
-width:94%;
-}
-
-#count{
-font-size:70px;
 }
 
 }
@@ -237,11 +202,11 @@ font-size:70px;
 
 <canvas id="matrix"></canvas>
 
-<!-- START SCREEN -->
+<!-- START -->
 
 <div class="terminal" id="start">
 
-<div id="boot"></div>
+<p id="boot"></p>
 
 <button onclick="startCountdown()">
 [ EXECUTE ]
@@ -252,153 +217,141 @@ font-size:70px;
 <!-- COUNTDOWN -->
 
 <div class="terminal" id="countdown">
-<div id="count">3</div>
+<h1 id="count">3</h1>
 </div>
 
-<!-- MESSAGE -->
+<!-- CONTENT -->
 
 <div class="terminal" id="content">
 
 <h1>
-&gt; Happy Birthday Susanna 🎂
+> Happy Birthday Susanna 🎂
 </h1>
 
-<div id="typing"></div>
+<p id="typing"></p>
 
-<div class="from">
-&gt; from praveen ❤️
-</div>
+<p style="opacity:0.6;margin-top:20px;">
+> from praveen ❤️
+</p>
 
 </div>
 
 <script>
 
-/* ───────── MATRIX RAIN ───────── */
+/* MATRIX */
 
-const canvas = document.getElementById("matrix");
-const ctx = canvas.getContext("2d");
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
 
-function resize(){
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-}
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-resize();
+let letters="SUSANNA";
+letters=letters.split("");
 
-window.addEventListener("resize", resize);
+let fontSize=16;
 
-const chars = "SUSANNA";
-const fontSize = 18;
+let columns=canvas.width/fontSize;
 
-let columns = Math.floor(canvas.width / fontSize);
-
-let drops = [];
+let drops=[];
 
 for(let i=0;i<columns;i++){
-drops[i] = Math.random() * -100;
+drops[i]=1;
 }
 
-function drawMatrix(){
+function draw(){
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+ctx.fillStyle="rgba(0,0,0,0.04)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
 
-ctx.font = fontSize + "px monospace";
+ctx.fillStyle="#00ffcc";
+ctx.font=fontSize+"px monospace";
 
 for(let i=0;i<drops.length;i++){
 
-const text =
-chars[Math.floor(Math.random()*chars.length)];
+let text=
+letters[Math.floor(Math.random()*letters.length)];
 
-const x = i * fontSize;
-const y = drops[i] * fontSize;
+ctx.fillText(
+text,
+i*fontSize,
+drops[i]*fontSize
+);
 
-ctx.shadowBlur = 12;
-ctx.shadowColor = "#00ffcc";
-
-ctx.fillStyle = "#8affea";
-
-ctx.fillText(text, x, y);
-
-ctx.shadowBlur = 0;
+if(
+drops[i]*fontSize>canvas.height &&
+Math.random()>0.975
+){
+drops[i]=0;
+}
 
 drops[i]++;
-
-if(y > canvas.height && Math.random() > 0.975){
-drops[i] = 0;
 }
 
 }
 
-}
+setInterval(draw,35);
 
-setInterval(drawMatrix,35);
+window.addEventListener("resize",()=>{
 
-/* ───────── BOOT TEXT ───────── */
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
 
-const bootLines = [
+});
 
-"> initializing system...",
-"> decrypting memories...",
+/* BOOT */
+
+const boot=[
+"> booting system...",
+"> connecting to server...",
 "> locating Susanna...",
-"> preparing birthday protocol...",
 "> access granted ✅"
-
 ];
 
-let line = 0;
+let line=0;
 
-function bootSequence(){
+function bootText(){
 
-if(line < bootLines.length){
+if(line<boot.length){
 
-document.getElementById("boot").innerHTML +=
-bootLines[line] + "<br>";
+document.getElementById("boot").innerHTML+=
+boot[line]+"<br>";
 
 line++;
 
-setTimeout(bootSequence,500);
+setTimeout(bootText,500);
 
 }
 
 }
 
-bootSequence();
+bootText();
 
-/* ───────── COUNTDOWN ───────── */
+/* COUNTDOWN */
 
 function startCountdown(){
 
-document.getElementById("start").style.display = "none";
+document.getElementById("start").style.display="none";
 
-document.getElementById("countdown").style.display = "block";
+document.getElementById("countdown").style.display="block";
 
-let count = 3;
+let count=3;
 
-document.getElementById("count").innerText = count;
-
-let interval = setInterval(()=>{
+let interval=setInterval(()=>{
 
 count--;
 
-if(count === 0){
+document.getElementById("count").innerText=count;
 
-document.getElementById("count").innerText = "🎂";
-
-setTimeout(()=>{
+if(count===0){
 
 clearInterval(interval);
 
-document.getElementById("countdown").style.display = "none";
+document.getElementById("countdown").style.display="none";
 
-document.getElementById("content").style.display = "block";
+document.getElementById("content").style.display="block";
 
 startTyping();
-
-},900);
-
-}else{
-
-document.getElementById("count").innerText = count;
 
 }
 
@@ -406,9 +359,9 @@ document.getElementById("count").innerText = count;
 
 }
 
-/* ───────── TYPING EFFECT ───────── */
+/* TYPING */
 
-const message = `> Not just another year...
+const message=`> Not just another year...
 but another chapter of your story.
 
 > May time be gentle with your beautiful heart,
@@ -419,32 +372,23 @@ but another chapter of your story.
 
 > Stay rare. Stay real. Stay you. ❤️`;
 
+let i=0;
+
 function startTyping(){
 
-const el = document.getElementById("typing");
+let typing=document.getElementById("typing");
 
-const cursor = document.createElement("span");
+let interval=setInterval(()=>{
 
-cursor.className = "cursor";
-
-el.appendChild(cursor);
-
-let i = 0;
-
-let interval = setInterval(()=>{
-
-el.insertBefore(
-document.createTextNode(message.charAt(i)),
-cursor
-);
+typing.innerHTML+=message.charAt(i);
 
 i++;
 
-if(i >= message.length){
+if(i>=message.length){
 clearInterval(interval);
 }
 
-},32);
+},35);
 
 }
 
