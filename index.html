@@ -7,46 +7,400 @@
 
 <style>
 
-body {
-    margin: 0;
-    background: #0a0a0a;
-    color: #00ffcc;
-    font-family: "Courier New", monospace;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    min-height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    position: relative;
+body{
+margin:0;
+background:#000;
+color:#00ffcc;
+font-family:Courier New, monospace;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+position:relative;
 }
 
-/* PHOTO COLLAGE */
+/* COLLAGE */
 
-.collage {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+.collage{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
 
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
+display:grid;
+grid-template-columns:repeat(4,1fr);
 
-    gap: 8px;
-    padding: 8px;
+gap:8px;
+padding:8px;
 
-    z-index: 0;
-
-    /* FIXED OPACITY */
-    opacity: 0.22;
+opacity:0.22;
+z-index:0;
 }
 
-.collage img {
-    width: 100%;
-    height: 100%;
+.collage img{
+width:100%;
+height:100%;
+object-fit:cover;
 
-    object-fit: cover;
-    border-radius: 8
+border-radius:8px;
+
+filter:grayscale(100%) brightness(0.4);
+}
+
+/* DARK OVERLAY */
+
+.overlay{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.7);
+z-index:1;
+}
+
+/* MATRIX */
+
+canvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:2;
+}
+
+/* TERMINAL */
+
+.terminal{
+position:relative;
+z-index:3;
+
+width:90%;
+max-width:600px;
+
+background:rgba(0,0,0,0.75);
+
+padding:25px;
+border-radius:10px;
+
+box-shadow:0 0 20px rgba(0,255,200,0.2);
+
+backdrop-filter:blur(5px);
+}
+
+/* TITLE */
+
+h1{
+color:#00ffcc;
+}
+
+/* BUTTON */
+
+button{
+background:transparent;
+border:1px solid #00ffcc;
+color:#00ffcc;
+
+padding:10px 20px;
+
+cursor:pointer;
+
+margin-top:20px;
+}
+
+button:hover{
+background:#00ffcc;
+color:black;
+}
+
+/* HIDDEN */
+
+#countdown,
+#content{
+display:none;
+}
+
+/* TYPING */
+
+#typing{
+margin-top:20px;
+line-height:1.6;
+white-space:pre-line;
+
+border-right:2px solid #00ffcc;
+
+animation:blink 1s infinite;
+}
+
+@keyframes blink{
+50%{
+border-color:transparent;
+}
+}
+
+/* MUSIC */
+
+.music{
+position:absolute;
+top:20px;
+right:20px;
+
+z-index:4;
+
+cursor:pointer;
+}
+
+/* MOBILE */
+
+@media(max-width:480px){
+
+.collage{
+grid-template-columns:repeat(3,1fr);
+}
+
+h1{
+font-size:20px;
+}
+
+.terminal{
+font-size:14px;
+padding:20px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- COLLAGE -->
+
+<div class="collage">
+
+<img src="photo1.jpg">
+<img src="photo2.jpg">
+<img src="photo3.jpg">
+<img src="photo4.jpg">
+<img src="photo5.jpg">
+<img src="photo6.jpg">
+<img src="photo7.jpg">
+<img src="photo8.jpg">
+<img src="photo9.jpg">
+<img src="photo10.jpg">
+<img src="photo11.jpg">
+<img src="photo12.jpg">
+<img src="photo13.jpg">
+<img src="photo14.jpg">
+<img src="photo15.jpg">
+
+</div>
+
+<div class="overlay"></div>
+
+<!-- MATRIX -->
+
+<canvas id="matrix"></canvas>
+
+<!-- MUSIC -->
+
+<div class="music" onclick="toggleMusic()">
+[ music ]
+</div>
+
+<audio id="bgMusic" loop>
+<source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3">
+</audio>
+
+<!-- START -->
+
+<div class="terminal" id="start">
+
+<p id="boot"></p>
+
+<button onclick="startCountdown()">
+[ EXECUTE ]
+</button>
+
+</div>
+
+<!-- COUNTDOWN -->
+
+<div class="terminal" id="countdown">
+<h1 id="count">3</h1>
+</div>
+
+<!-- CONTENT -->
+
+<div class="terminal" id="content">
+
+<h1>
+> Happy Birthday Susanna 🎂
+</h1>
+
+<p id="typing"></p>
+
+<p style="opacity:0.6;margin-top:20px;">
+> from praveen
+</p>
+
+</div>
+
+<script>
+
+/* MATRIX */
+
+const canvas=document.getElementById("matrix");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let letters="01";
+letters=letters.split("");
+
+let fontSize=14;
+
+let columns=canvas.width/fontSize;
+
+let drops=[];
+
+for(let i=0;i<columns;i++){
+drops[i]=1;
+}
+
+function draw(){
+
+ctx.fillStyle="rgba(0,0,0,0.05)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.fillStyle="#00ffcc";
+ctx.font=fontSize+"px monospace";
+
+for(let i=0;i<drops.length;i++){
+
+let text=
+letters[Math.floor(Math.random()*letters.length)];
+
+ctx.fillText(text,i*fontSize,drops[i]*fontSize);
+
+if(
+drops[i]*fontSize>canvas.height &&
+Math.random()>0.975
+){
+drops[i]=0;
+}
+
+drops[i]++;
+}
+
+}
+
+setInterval(draw,35);
+
+/* BOOT */
+
+const boot=[
+"> booting system...",
+"> connecting to server...",
+"> locating Susanna...",
+"> access granted ✅"
+];
+
+let line=0;
+
+function bootText(){
+
+if(line<boot.length){
+
+document.getElementById("boot").innerHTML+=
+boot[line]+"<br>";
+
+line++;
+
+setTimeout(bootText,500);
+
+}
+
+}
+
+bootText();
+
+/* COUNTDOWN */
+
+function startCountdown(){
+
+document.getElementById("start").style.display="none";
+
+document.getElementById("countdown").style.display="block";
+
+let count=3;
+
+let interval=setInterval(()=>{
+
+count--;
+
+document.getElementById("count").innerText=count;
+
+if(count===0){
+
+clearInterval(interval);
+
+document.getElementById("countdown").style.display="none";
+
+document.getElementById("content").style.display="block";
+
+startTyping();
+
+}
+
+},1000);
+
+}
+
+/* TYPING */
+
+const message=`> Not just another year...
+> but another chapter of your story.
+> stay rare. stay real. stay you. ❤️`;
+
+let i=0;
+
+function startTyping(){
+
+let typing=document.getElementById("typing");
+
+let interval=setInterval(()=>{
+
+typing.innerHTML+=message.charAt(i);
+
+i++;
+
+if(i>=message.length){
+clearInterval(interval);
+}
+
+},40);
+
+}
+
+/* MUSIC */
+
+function toggleMusic(){
+
+let music=document.getElementById("bgMusic");
+
+if(music.paused){
+music.play();
+}
+
+else{
+music.pause();
+}
+
+}
+
+</script>
+
+</body>
+</html>
