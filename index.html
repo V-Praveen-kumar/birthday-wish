@@ -34,7 +34,6 @@ inset:0;
 
 display:grid;
 grid-template-columns:repeat(4,1fr);
-grid-auto-rows:25vh;
 
 gap:4px;
 padding:4px;
@@ -45,6 +44,8 @@ z-index:0;
 .collage img{
 width:100%;
 height:100%;
+aspect-ratio:1/1;
+
 object-fit:cover;
 
 filter:
@@ -169,13 +170,17 @@ font-size:100px;
 text-align:center;
 }
 
-/* ───────── MOBILE ───────── */
+/* ───────── MOBILE FIX ───────── */
 
 @media(max-width:768px){
 
 .collage{
 grid-template-columns:repeat(3,1fr);
-grid-auto-rows:20vh;
+}
+
+.collage img{
+aspect-ratio:1/1;
+object-fit:cover;
 }
 
 h1{
@@ -295,7 +300,6 @@ drops[i] = Math.random() * -100;
 
 function drawMatrix(){
 
-/* FIXED — no black fade layer */
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
 ctx.font = fontSize + "px monospace";
@@ -308,11 +312,9 @@ chars[Math.floor(Math.random()*chars.length)];
 const x = i * fontSize;
 const y = drops[i] * fontSize;
 
-/* glow */
 ctx.shadowBlur = 12;
 ctx.shadowColor = "#00ffcc";
 
-/* bright text */
 ctx.fillStyle = "#8affea";
 
 ctx.fillText(text, x, y);
