@@ -7,20 +7,26 @@
 
 <style>
 
-body{
+*{
+box-sizing:border-box;
 margin:0;
+padding:0;
+}
+
+body{
 background:#000;
 color:#00ffcc;
-font-family:Courier New, monospace;
+font-family:'Courier New',monospace;
 overflow:hidden;
 display:flex;
 justify-content:center;
 align-items:center;
 height:100vh;
+width:100vw;
 position:relative;
 }
 
-/* COLLAGE */
+/* ─── COLLAGE ─── */
 
 .collage{
 position:fixed;
@@ -31,11 +37,12 @@ height:100%;
 
 display:grid;
 grid-template-columns:repeat(4,1fr);
+grid-auto-rows:calc(100vh / 4);
 
-gap:8px;
-padding:8px;
+gap:4px;
+padding:4px;
 
-opacity:0.45;
+opacity:0.70;
 z-index:0;
 }
 
@@ -44,21 +51,21 @@ width:100%;
 height:100%;
 object-fit:cover;
 
-border-radius:8px;
+border-radius:6px;
 
-filter:grayscale(20%) brightness(0.55);
+filter:grayscale(40%) brightness(0.75) contrast(1.1);
 }
 
-/* OVERLAY */
+/* ─── OVERLAY ─── */
 
 .overlay{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,0.30);
+background:rgba(0,0,0,0.22);
 z-index:1;
 }
 
-/* MATRIX */
+/* ─── MATRIX ─── */
 
 canvas{
 position:fixed;
@@ -70,101 +77,147 @@ z-index:2;
 pointer-events:none;
 }
 
-/* TERMINAL */
+/* ─── TERMINAL ─── */
 
 .terminal{
 position:relative;
 z-index:3;
 
 width:90%;
-max-width:650px;
+max-width:660px;
 
-background:rgba(0,0,0,0.78);
+background:rgba(0,0,0,0.72);
 
-padding:25px;
+padding:30px;
 border-radius:10px;
 
-box-shadow:0 0 20px rgba(0,255,200,0.2);
+border:1px solid rgba(0,255,204,0.25);
 
-backdrop-filter:blur(5px);
+box-shadow:
+0 0 30px rgba(0,255,200,0.15),
+inset 0 0 60px rgba(0,0,0,0.4);
+
+backdrop-filter:blur(6px);
 }
-
-/* TITLE */
 
 h1{
 color:#00ffcc;
-font-size:42px;
-margin-bottom:20px;
+margin-bottom:10px;
 }
 
-/* BUTTON */
+/* ─── BUTTON ─── */
 
 button{
 background:transparent;
 border:1px solid #00ffcc;
 color:#00ffcc;
 
-padding:10px 20px;
+padding:10px 24px;
 
 cursor:pointer;
 
 margin-top:20px;
 
-font-family:Courier New, monospace;
+font-family:'Courier New',monospace;
+font-size:14px;
+letter-spacing:1px;
+
+transition:all .2s;
 }
 
 button:hover{
 background:#00ffcc;
-color:black;
+color:#000;
 }
 
-/* HIDDEN */
+/* ─── COUNTDOWN ─── */
 
-#countdown,
+#countdown{
+display:none;
+}
+
+#countdown h1{
+font-size:80px;
+text-align:center;
+
+animation:pulse 0.9s infinite alternate;
+}
+
+@keyframes pulse{
+from{
+text-shadow:0 0 10px #00ffcc;
+}
+to{
+text-shadow:
+0 0 40px #00ffcc,
+0 0 80px #00ffcc;
+}
+}
+
+/* ─── CONTENT ─── */
+
 #content{
 display:none;
 }
 
-/* TYPING */
-
 #typing{
 margin-top:20px;
-line-height:1.8;
+line-height:2;
 white-space:pre-line;
+min-height:2em;
+}
 
-border-right:2px solid #00ffcc;
+.cursor{
+display:inline-block;
+width:9px;
+height:1.1em;
 
-animation:blink 1s infinite;
+background:#00ffcc;
 
-font-size:18px;
+vertical-align:text-bottom;
+
+animation:blink 1s step-start infinite;
 }
 
 @keyframes blink{
 50%{
-border-color:transparent;
+opacity:0;
 }
 }
 
-/* MOBILE */
+.from-line{
+opacity:0.55;
+margin-top:22px;
+font-size:13px;
+letter-spacing:1px;
+}
+
+#boot{
+line-height:2;
+min-height:80px;
+}
+
+/* ─── MOBILE ─── */
 
 @media(max-width:480px){
 
 .collage{
 grid-template-columns:repeat(3,1fr);
+grid-auto-rows:calc(100vh/5);
 }
 
 h1{
-font-size:24px;
+font-size:18px;
 }
 
 .terminal{
-font-size:14px;
-padding:20px;
-width:92%;
+font-size:13px;
+padding:18px;
+width:94%;
 }
 
-#typing{
-font-size:15px;
+#countdown h1{
+font-size:56px;
 }
 
 }
@@ -202,13 +255,13 @@ font-size:15px;
 
 <canvas id="matrix"></canvas>
 
-<!-- START -->
+<!-- START SCREEN -->
 
-<div class="terminal" id="start">
+<div class="terminal" id="startScreen">
 
 <p id="boot"></p>
 
-<button onclick="startCountdown()">
+<button id="execBtn" style="display:none;" onclick="startCountdown()">
 [ EXECUTE ]
 </button>
 
@@ -220,137 +273,191 @@ font-size:15px;
 <h1 id="count">3</h1>
 </div>
 
-<!-- CONTENT -->
+<!-- MESSAGE -->
 
 <div class="terminal" id="content">
 
-<h1>
-> Happy Birthday Susanna 🎂
-</h1>
+<h1>&gt; Happy Birthday Susanna 🎂</h1>
 
 <p id="typing"></p>
 
-<p style="opacity:0.6;margin-top:20px;">
-> from praveen ❤️
+<p class="from-line">
+&gt; from praveen ❤️
 </p>
 
 </div>
 
 <script>
 
-/* MATRIX */
+/* ─── MATRIX RAIN ─── */
 
-const canvas=document.getElementById("matrix");
-const ctx=canvas.getContext("2d");
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
 
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
-
-let letters="SUSANNA";
-letters=letters.split("");
-
-let fontSize=16;
-
-let columns=canvas.width/fontSize;
-
-let drops=[];
-
-for(let i=0;i<columns;i++){
-drops[i]=1;
+function resizeCanvas(){
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 }
 
-function draw(){
+resizeCanvas();
+
+window.addEventListener("resize", resizeCanvas);
+
+const chars = "SUSANNA".split("");
+
+const fontSize = 14;
+
+let columns = Math.floor(canvas.width / fontSize);
+
+let drops = Array.from(
+{length: columns},
+() => Math.random() * -100
+);
+
+function drawMatrix(){
 
 ctx.clearRect(0,0,canvas.width,canvas.height);
 
-ctx.fillStyle="#00ffcc";
-ctx.font=fontSize+"px monospace";
+ctx.font = fontSize + "px monospace";
 
 for(let i=0;i<drops.length;i++){
 
-let text=
-letters[Math.floor(Math.random()*letters.length)];
+const ch =
+chars[Math.floor(Math.random()*chars.length)];
+
+ctx.fillStyle =
+drops[i] < 2 ? "#ffffff" : "#00ffcc";
 
 ctx.fillText(
-text,
-i*fontSize,
-drops[i]*fontSize
+ch,
+i * fontSize,
+drops[i] * fontSize
 );
 
 if(
-drops[i]*fontSize>canvas.height &&
-Math.random()>0.975
+drops[i] * fontSize > canvas.height &&
+Math.random() > 0.975
 ){
-drops[i]=0;
+drops[i] = 0;
 }
 
-drops[i]++;
+drops[i] += 0.6;
 }
 
 }
 
-setInterval(draw,35);
+setInterval(drawMatrix,40);
 
-window.addEventListener("resize",()=>{
+/* ─── BOOT ─── */
 
-canvas.width=window.innerWidth;
-canvas.height=window.innerHeight;
+const bootLines = [
 
-});
-
-/* BOOT */
-
-const boot=[
-"> booting system...",
-"> connecting to server...",
+"> initializing system...",
+"> scanning network nodes...",
 "> locating Susanna...",
+"> decrypting birthday protocol...",
 "> access granted ✅"
+
 ];
 
-let line=0;
+let lineIdx = 0;
 
-function bootText(){
+const bootEl =
+document.getElementById("boot");
 
-if(line<boot.length){
+function typeLine(line, cb){
 
-document.getElementById("boot").innerHTML+=
-boot[line]+"<br>";
+let i = 0;
 
-line++;
+const interval = setInterval(() => {
 
-setTimeout(bootText,500);
+bootEl.innerHTML += line.charAt(i);
 
-}
+i++;
 
-}
-
-bootText();
-
-/* COUNTDOWN */
-
-function startCountdown(){
-
-document.getElementById("start").style.display="none";
-
-document.getElementById("countdown").style.display="block";
-
-let count=3;
-
-let interval=setInterval(()=>{
-
-count--;
-
-document.getElementById("count").innerText=count;
-
-if(count===0){
+if(i >= line.length){
 
 clearInterval(interval);
 
-document.getElementById("countdown").style.display="none";
+bootEl.innerHTML += "<br>";
 
-document.getElementById("content").style.display="block";
+cb && cb();
+
+}
+
+},28);
+
+}
+
+function runBoot(){
+
+if(lineIdx < bootLines.length){
+
+typeLine(
+bootLines[lineIdx],
+() => {
+
+lineIdx++;
+
+setTimeout(runBoot,180);
+
+}
+);
+
+}else{
+
+document.getElementById("execBtn")
+.style.display = "inline-block";
+
+}
+
+}
+
+setTimeout(runBoot,400);
+
+/* ─── COUNTDOWN ─── */
+
+function startCountdown(){
+
+document.getElementById("startScreen")
+.style.display = "none";
+
+const cdScreen =
+document.getElementById("countdown");
+
+const cdNum =
+document.getElementById("count");
+
+cdScreen.style.display = "block";
+
+let count = 3;
+
+cdNum.textContent = count;
+
+const interval = setInterval(() => {
+
+count--;
+
+if(count === 0){
+
+cdNum.textContent = "🎂";
+
+setTimeout(() => {
+
+clearInterval(interval);
+
+cdScreen.style.display = "none";
+
+document.getElementById("content")
+.style.display = "block";
 
 startTyping();
+
+},900);
+
+}else{
+
+cdNum.textContent = count;
 
 }
 
@@ -358,9 +465,9 @@ startTyping();
 
 }
 
-/* TYPING */
+/* ─── TYPING ─── */
 
-const message=`> Not just another year...
+const message = `> Not just another year...
 but another chapter of your story.
 
 > May time be gentle with your beautiful heart,
@@ -371,23 +478,34 @@ but another chapter of your story.
 
 > Stay rare. Stay real. Stay you. ❤️`;
 
-let i=0;
-
 function startTyping(){
 
-let typing=document.getElementById("typing");
+const el =
+document.getElementById("typing");
 
-let interval=setInterval(()=>{
+const cursor =
+document.createElement("span");
 
-typing.innerHTML+=message.charAt(i);
+cursor.className = "cursor";
+
+el.appendChild(cursor);
+
+let i = 0;
+
+const interval = setInterval(() => {
+
+el.insertBefore(
+document.createTextNode(message.charAt(i)),
+cursor
+);
 
 i++;
 
-if(i>=message.length){
+if(i >= message.length){
 clearInterval(interval);
 }
 
-},35);
+},32);
 
 }
 
