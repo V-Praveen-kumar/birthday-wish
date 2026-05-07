@@ -4,336 +4,512 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Birthday Terminal 🎉</title>
+
 <style>
 
-*{box-sizing:border-box;margin:0;padding:0;}
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+}
 
 body{
-  background:#000;
-  color:#00ffcc;
-  font-family:'Courier New',monospace;
-  overflow:hidden;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  height:100vh;
-  width:100vw;
-  position:relative;
+background:#000;
+color:#00ffcc;
+font-family:'Courier New',monospace;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+height:100vh;
+width:100vw;
+position:relative;
 }
 
 /* ─── COLLAGE ─── */
+
 .collage{
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  grid-auto-rows:calc(100vh / 4);   /* ← KEY FIX: rows need explicit height */
-  gap:4px;
-  padding:4px;
-  opacity:0.45;                     /* ← raised from 0.22 */
-  z-index:0;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+display:grid;
+grid-template-columns:repeat(4,1fr);
+grid-auto-rows:calc(100vh / 4);
+
+gap:4px;
+padding:4px;
+
+opacity:0.70;
+z-index:0;
 }
 
 .collage img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  border-radius:6px;
-  filter:grayscale(60%) brightness(0.65) contrast(1.1);
+width:100%;
+height:100%;
+object-fit:cover;
+
+border-radius:6px;
+
+filter:grayscale(40%) brightness(0.75) contrast(1.1);
 }
 
 /* ─── OVERLAY ─── */
+
 .overlay{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,0.45);      /* ← reduced from 0.7 */
-  z-index:1;
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.22);
+z-index:1;
 }
 
-/* ─── MATRIX CANVAS ─── */
+/* ─── MATRIX ─── */
+
 canvas{
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  z-index:2;
-  pointer-events:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:2;
+pointer-events:none;
 }
 
-/* ─── TERMINAL BOX ─── */
+/* ─── TERMINAL ─── */
+
 .terminal{
-  position:relative;
-  z-index:3;
-  width:90%;
-  max-width:660px;
-  background:rgba(0,0,0,0.80);
-  padding:30px;
-  border-radius:10px;
-  border:1px solid rgba(0,255,204,0.25);
-  box-shadow:0 0 30px rgba(0,255,200,0.15), inset 0 0 60px rgba(0,0,0,0.4);
-  backdrop-filter:blur(6px);
+position:relative;
+z-index:3;
+
+width:90%;
+max-width:660px;
+
+background:rgba(0,0,0,0.72);
+
+padding:30px;
+border-radius:10px;
+
+border:1px solid rgba(0,255,204,0.25);
+
+box-shadow:
+0 0 30px rgba(0,255,200,0.15),
+inset 0 0 60px rgba(0,0,0,0.4);
+
+backdrop-filter:blur(6px);
 }
 
-h1{color:#00ffcc; margin-bottom:10px;}
+h1{
+color:#00ffcc;
+margin-bottom:10px;
+}
+
+/* ─── BUTTON ─── */
 
 button{
-  background:transparent;
-  border:1px solid #00ffcc;
-  color:#00ffcc;
-  padding:10px 24px;
-  cursor:pointer;
-  margin-top:20px;
-  font-family:'Courier New',monospace;
-  font-size:14px;
-  letter-spacing:1px;
-  transition:all .2s;
+background:transparent;
+border:1px solid #00ffcc;
+color:#00ffcc;
+
+padding:10px 24px;
+
+cursor:pointer;
+
+margin-top:20px;
+
+font-family:'Courier New',monospace;
+font-size:14px;
+letter-spacing:1px;
+
+transition:all .2s;
 }
-button:hover{background:#00ffcc; color:#000;}
+
+button:hover{
+background:#00ffcc;
+color:#000;
+}
 
 /* ─── COUNTDOWN ─── */
-#countdown{display:none;}
-#countdown h1{
-  font-size:80px;
-  text-align:center;
-  animation:pulse 0.9s infinite alternate;
+
+#countdown{
+display:none;
 }
+
+#countdown h1{
+font-size:80px;
+text-align:center;
+
+animation:pulse 0.9s infinite alternate;
+}
+
 @keyframes pulse{
-  from{text-shadow:0 0 10px #00ffcc;}
-  to{text-shadow:0 0 40px #00ffcc,0 0 80px #00ffcc;}
+from{
+text-shadow:0 0 10px #00ffcc;
+}
+to{
+text-shadow:
+0 0 40px #00ffcc,
+0 0 80px #00ffcc;
+}
 }
 
 /* ─── CONTENT ─── */
-#content{display:none;}
+
+#content{
+display:none;
+}
 
 #typing{
-  margin-top:20px;
-  line-height:2;
-  white-space:pre-line;
-  min-height:2em;
+margin-top:20px;
+line-height:2;
+white-space:pre-line;
+min-height:2em;
 }
 
 .cursor{
-  display:inline-block;
-  width:9px; height:1.1em;
-  background:#00ffcc;
-  vertical-align:text-bottom;
-  animation:blink 1s step-start infinite;
+display:inline-block;
+width:9px;
+height:1.1em;
+
+background:#00ffcc;
+
+vertical-align:text-bottom;
+
+animation:blink 1s step-start infinite;
 }
-@keyframes blink{50%{opacity:0;}}
+
+@keyframes blink{
+50%{
+opacity:0;
+}
+}
 
 .from-line{
-  opacity:0.55;
-  margin-top:22px;
-  font-size:13px;
-  letter-spacing:1px;
+opacity:0.55;
+margin-top:22px;
+font-size:13px;
+letter-spacing:1px;
 }
 
-/* ─── MUSIC BUTTON ─── */
-.music{
-  position:fixed;
-  top:18px; right:20px;
-  z-index:5;
-  cursor:pointer;
-  font-size:13px;
-  border:1px solid rgba(0,255,204,0.4);
-  padding:5px 12px;
-  border-radius:4px;
-  background:rgba(0,0,0,0.6);
-  transition:all .2s;
-  user-select:none;
+#boot{
+line-height:2;
+min-height:80px;
 }
-.music:hover{background:rgba(0,255,204,0.15);}
-
-#boot{line-height:2; min-height:80px;}
 
 /* ─── MOBILE ─── */
+
 @media(max-width:480px){
-  .collage{grid-template-columns:repeat(3,1fr); grid-auto-rows:calc(100vh/5);}
-  h1{font-size:18px;}
-  .terminal{font-size:13px; padding:18px; width:94%;}
-  #countdown h1{font-size:56px;}
+
+.collage{
+grid-template-columns:repeat(3,1fr);
+grid-auto-rows:calc(100vh/5);
+}
+
+h1{
+font-size:18px;
+}
+
+.terminal{
+font-size:13px;
+padding:18px;
+width:94%;
+}
+
+#countdown h1{
+font-size:56px;
+}
+
 }
 
 </style>
 </head>
+
 <body>
 
-<!-- COLLAGE BACKGROUND -->
+<!-- COLLAGE -->
+
 <div class="collage">
-  <img src="photo1.jpg"  alt="">
-  <img src="photo2.jpg"  alt="">
-  <img src="photo3.jpg"  alt="">
-  <img src="photo4.jpg"  alt="">
-  <img src="photo5.jpg"  alt="">
-  <img src="photo6.jpg"  alt="">
-  <img src="photo7.jpg"  alt="">
-  <img src="photo8.jpg"  alt="">
-  <img src="photo9.jpg"  alt="">
-  <img src="photo10.jpg" alt="">
-  <img src="photo11.jpg" alt="">
-  <img src="photo12.jpg" alt="">
-  <img src="photo13.jpg" alt="">
-  <img src="photo14.jpg" alt="">
-  <img src="photo15.jpg" alt="">
-  <img src="photo1.jpg"  alt="">
+
+<img src="photo1.jpg">
+<img src="photo2.jpg">
+<img src="photo3.jpg">
+<img src="photo4.jpg">
+<img src="photo5.jpg">
+<img src="photo6.jpg">
+<img src="photo7.jpg">
+<img src="photo8.jpg">
+<img src="photo9.jpg">
+<img src="photo10.jpg">
+<img src="photo11.jpg">
+<img src="photo12.jpg">
+<img src="photo13.jpg">
+<img src="photo14.jpg">
+<img src="photo15.jpg">
+
 </div>
 
 <div class="overlay"></div>
+
+<!-- MATRIX -->
+
 <canvas id="matrix"></canvas>
 
-<div class="music" id="musicBtn" onclick="toggleMusic()">[ ♪ music ]</div>
+<!-- START SCREEN -->
 
-<audio id="bgMusic" loop>
-  <source src="https://www.bensound.com/bensound-music/bensound-sunny.mp3" type="audio/mpeg">
-</audio>
-
-<!-- SCREEN 1: BOOT -->
 <div class="terminal" id="startScreen">
-  <p id="boot"></p>
-  <button id="execBtn" style="display:none;" onclick="startCountdown()">[ EXECUTE ]</button>
+
+<p id="boot"></p>
+
+<button id="execBtn" style="display:none;" onclick="startCountdown()">
+[ EXECUTE ]
+</button>
+
 </div>
 
-<!-- SCREEN 2: COUNTDOWN -->
+<!-- COUNTDOWN -->
+
 <div class="terminal" id="countdown">
-  <h1 id="count">3</h1>
+<h1 id="count">3</h1>
 </div>
 
-<!-- SCREEN 3: MESSAGE -->
+<!-- MESSAGE -->
+
 <div class="terminal" id="content">
-  <h1>&gt; Happy Birthday Susanna 🎂</h1>
-  <p id="typing"></p>
-  <p class="from-line">&gt; from praveen &nbsp;❤️</p>
+
+<h1>&gt; Happy Birthday Susanna 🎂</h1>
+
+<p id="typing"></p>
+
+<p class="from-line">
+&gt; from praveen ❤️
+</p>
+
 </div>
 
 <script>
 
-/* MATRIX RAIN */
+/* ─── MATRIX RAIN ─── */
+
 const canvas = document.getElementById("matrix");
-const ctx    = canvas.getContext("2d");
+const ctx = canvas.getContext("2d");
 
 function resizeCanvas(){
-  canvas.width  = window.innerWidth;
-  canvas.height = window.innerHeight;
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 }
+
 resizeCanvas();
+
 window.addEventListener("resize", resizeCanvas);
 
-const chars   = "01アイウエオカキクケコサシスセソタチツテトナニヌネノ".split("");
-const fontSize = 13;
-let columns   = Math.floor(canvas.width / fontSize);
-let drops     = Array.from({length: columns}, () => Math.random() * -100);
+const chars = "SUSANNA".split("");
+
+const fontSize = 14;
+
+let columns = Math.floor(canvas.width / fontSize);
+
+let drops = Array.from(
+{length: columns},
+() => Math.random() * -100
+);
 
 function drawMatrix(){
-  ctx.fillStyle = "rgba(0,0,0,0.045)";
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  ctx.font = fontSize + "px monospace";
 
-  for(let i = 0; i < drops.length; i++){
-    const ch = chars[Math.floor(Math.random() * chars.length)];
-    ctx.fillStyle = drops[i] < 2 ? "#fff" : "#00ffcc";
-    ctx.fillText(ch, i * fontSize, drops[i] * fontSize);
-    if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
-    drops[i] += 0.6;
-  }
+ctx.fillStyle = "rgba(0,0,0,0.04)";
+ctx.fillRect(0,0,canvas.width,canvas.height);
+
+ctx.font = fontSize + "px monospace";
+
+for(let i=0;i<drops.length;i++){
+
+const ch =
+chars[Math.floor(Math.random()*chars.length)];
+
+ctx.fillStyle =
+drops[i] < 2 ? "#ffffff" : "#00ffcc";
+
+ctx.fillText(
+ch,
+i * fontSize,
+drops[i] * fontSize
+);
+
+if(
+drops[i] * fontSize > canvas.height &&
+Math.random() > 0.975
+){
+drops[i] = 0;
 }
-setInterval(drawMatrix, 40);
 
-/* BOOT SEQUENCE */
+drops[i] += 0.6;
+}
+
+}
+
+setInterval(drawMatrix,40);
+
+/* ─── BOOT ─── */
+
 const bootLines = [
-  "> initializing system...",
-  "> scanning network nodes...",
-  "> locating Susanna...",
-  "> decrypting birthday protocol...",
-  "> access granted ✅"
+
+"> initializing system...",
+"> scanning network nodes...",
+"> locating Susanna...",
+"> decrypting birthday protocol...",
+"> access granted ✅"
+
 ];
 
 let lineIdx = 0;
-const bootEl = document.getElementById("boot");
+
+const bootEl =
+document.getElementById("boot");
 
 function typeLine(line, cb){
-  let i = 0;
-  const interval = setInterval(() => {
-    bootEl.innerHTML += line.charAt(i);
-    i++;
-    if(i >= line.length){ clearInterval(interval); bootEl.innerHTML += "<br>"; cb && cb(); }
-  }, 28);
+
+let i = 0;
+
+const interval = setInterval(() => {
+
+bootEl.innerHTML += line.charAt(i);
+
+i++;
+
+if(i >= line.length){
+
+clearInterval(interval);
+
+bootEl.innerHTML += "<br>";
+
+cb && cb();
+
+}
+
+},28);
+
 }
 
 function runBoot(){
-  if(lineIdx < bootLines.length){
-    typeLine(bootLines[lineIdx], () => { lineIdx++; setTimeout(runBoot, 180); });
-  } else {
-    document.getElementById("execBtn").style.display = "inline-block";
-  }
-}
-setTimeout(runBoot, 400);
 
-/* COUNTDOWN */
+if(lineIdx < bootLines.length){
+
+typeLine(
+bootLines[lineIdx],
+() => {
+
+lineIdx++;
+
+setTimeout(runBoot,180);
+
+}
+);
+
+}else{
+
+document.getElementById("execBtn")
+.style.display = "inline-block";
+
+}
+
+}
+
+setTimeout(runBoot,400);
+
+/* ─── COUNTDOWN ─── */
+
 function startCountdown(){
-  document.getElementById("startScreen").style.display = "none";
-  const cdScreen = document.getElementById("countdown");
-  const cdNum    = document.getElementById("count");
-  cdScreen.style.display = "block";
 
-  let count = 3;
-  cdNum.textContent = count;
+document.getElementById("startScreen")
+.style.display = "none";
 
-  const interval = setInterval(() => {
-    count--;
-    if(count === 0){
-      cdNum.textContent = "🎂";
-      setTimeout(() => {
-        clearInterval(interval);
-        cdScreen.style.display = "none";
-        document.getElementById("content").style.display = "block";
-        startTyping();
-      }, 900);
-    } else {
-      cdNum.textContent = count;
-    }
-  }, 1000);
+const cdScreen =
+document.getElementById("countdown");
+
+const cdNum =
+document.getElementById("count");
+
+cdScreen.style.display = "block";
+
+let count = 3;
+
+cdNum.textContent = count;
+
+const interval = setInterval(() => {
+
+count--;
+
+if(count === 0){
+
+cdNum.textContent = "🎂";
+
+setTimeout(() => {
+
+clearInterval(interval);
+
+cdScreen.style.display = "none";
+
+document.getElementById("content")
+.style.display = "block";
+
+startTyping();
+
+},900);
+
+}else{
+
+cdNum.textContent = count;
+
 }
 
-/* TYPING EFFECT */
+},1000);
+
+}
+
+/* ─── TYPING ─── */
+
 const message = `> Not just another year...
-> but another chapter of your story.
+but another chapter of your story.
 
 > May time be gentle with your beautiful heart,
 > and may I always find reasons to make you smile.
-
 > If somehow I become the reason to gash your heart,
 > may that be my last moment beside you.
 
 > Stay rare. Stay real. Stay you. ❤️`;
 
 function startTyping(){
-  const el     = document.getElementById("typing");
-  const cursor = document.createElement("span");
-  cursor.className = "cursor";
-  el.appendChild(cursor);
 
-  let i = 0;
-  const interval = setInterval(() => {
-    el.insertBefore(document.createTextNode(message.charAt(i)), cursor);
-    i++;
-    if(i >= message.length) clearInterval(interval);
-  }, 32);
+const el =
+document.getElementById("typing");
+
+const cursor =
+document.createElement("span");
+
+cursor.className = "cursor";
+
+el.appendChild(cursor);
+
+let i = 0;
+
+const interval = setInterval(() => {
+
+el.insertBefore(
+document.createTextNode(message.charAt(i)),
+cursor
+);
+
+i++;
+
+if(i >= message.length){
+clearInterval(interval);
 }
 
-/* MUSIC */
-const music    = document.getElementById("bgMusic");
-const musicBtn = document.getElementById("musicBtn");
+},32);
 
-function toggleMusic(){
-  if(music.paused){
-    music.play().catch(()=>{});
-    musicBtn.textContent = "[ ♪ on  ]";
-  } else {
-    music.pause();
-    musicBtn.textContent = "[ ♪ off ]";
-  }
 }
 
 </script>
+
 </body>
 </html>
