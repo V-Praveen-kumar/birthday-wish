@@ -54,7 +54,7 @@ filter:grayscale(20%) brightness(0.55);
 .overlay{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,0.35);
+background:rgba(0,0,0,0.30);
 z-index:1;
 }
 
@@ -261,8 +261,7 @@ drops[i]=1;
 
 function draw(){
 
-ctx.fillStyle="rgba(0,0,0,0.04)";
-ctx.fillRect(0,0,canvas.width,canvas.height);
+ctx.clearRect(0,0,canvas.width,canvas.height);
 
 ctx.fillStyle="#00ffcc";
 ctx.font=fontSize+"px monospace";
