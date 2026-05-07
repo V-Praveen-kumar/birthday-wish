@@ -60,7 +60,7 @@ border-radius:6px;
 .overlay{
 position:fixed;
 inset:0;
-background:rgba(0,0,0,0.35);
+background:rgba(0,0,0,0.25);
 z-index:1;
 }
 
@@ -273,64 +273,60 @@ font-size:70px;
 const canvas = document.getElementById("matrix");
 const ctx = canvas.getContext("2d");
 
-function resize(){
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-}
 
-resize();
+const letters = "SUSANNA".split("");
 
-window.addEventListener("resize", resize);
+const fontSize = 16;
 
-const chars = "SUSANNA";
-const fontSize = 18;
+const columns = canvas.width / fontSize;
 
-let columns = Math.floor(canvas.width / fontSize);
+const drops = [];
 
-let drops = [];
-
-for(let i=0;i<columns;i++){
-drops[i] = Math.random() * -100;
+for(let i = 0; i < columns; i++){
+drops[i] = 1;
 }
 
 function drawMatrix(){
 
-/* translucent clear */
-ctx.fillStyle = "rgba(0,0,0,0.10)";
+ctx.fillStyle = "rgba(0,0,0,0.04)";
 ctx.fillRect(0,0,canvas.width,canvas.height);
 
+ctx.fillStyle = "#00ffcc";
 ctx.font = fontSize + "px monospace";
 
-for(let i=0;i<drops.length;i++){
+for(let i = 0; i < drops.length; i++){
 
 const text =
-chars[Math.floor(Math.random()*chars.length)];
+letters[Math.floor(Math.random() * letters.length)];
 
-const x = i * fontSize;
-const y = drops[i] * fontSize;
+ctx.fillText(
+text,
+i * fontSize,
+drops[i] * fontSize
+);
 
-/* glow */
-ctx.shadowBlur = 12;
-ctx.shadowColor = "#00ffcc";
-
-/* bright leading char */
-ctx.fillStyle = "#8affea";
-
-ctx.fillText(text, x, y);
-
-ctx.shadowBlur = 0;
-
-drops[i]++;
-
-if(y > canvas.height && Math.random() > 0.975){
+if(
+drops[i] * fontSize > canvas.height &&
+Math.random() > 0.975
+){
 drops[i] = 0;
 }
 
+drops[i]++;
 }
 
 }
 
 setInterval(drawMatrix,35);
+
+window.addEventListener("resize",()=>{
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+});
 
 /* ───────── BOOT TEXT ───────── */
 
